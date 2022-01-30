@@ -3,11 +3,13 @@
     <el-menu
       default-active="1"
       class="el-menu-vertical-demo"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
+      background-color="#00ADA2"
+      text-color="#122A57"
+      active-text-color="#000"
       router
+      :collapse="isCollapse"
     >
+      <el-menu-item> <span slot="title">易购后台管理系统</span></el-menu-item>
       <el-menu-item index="/">
         <i class="el-icon-menu"></i>
         <span slot="title">首页</span>
@@ -43,7 +45,30 @@
 </template>
 
 <script>
-export default {};
+import bus from "./eventBus";
+export default {
+  data() {
+    return {
+      isCollapse: true,
+    };
+  },
+  created() {
+    bus.$on("share", (val) => {
+      this.isCollapse = val;
+    });
+  },
+};
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+.el-menu-vertical-demo {
+  height: 100%;
+}
+.is-active {
+  background-color: #fff !important;
+}
+</style>
