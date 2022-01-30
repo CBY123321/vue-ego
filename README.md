@@ -1,19 +1,3 @@
-# vue-ego
+## vue-ego
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+基于 axios node vue2.0 mysql 完成的后台管理系统
