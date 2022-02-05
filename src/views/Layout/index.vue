@@ -31,6 +31,7 @@ export default {
 <style lang="less" scoped>
 .layout {
   display: flex;
+  background-color: #fafafa;
   .menu {
     // width: 200px;
     height: 100%;

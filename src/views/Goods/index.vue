@@ -2,9 +2,17 @@
   <div class="goods">
     <!-- 搜索区域 -->
     <div class="header">
-      <el-input v-model="input" placeholder="请输入内容"></el-input>
+      <el-input
+        @change="getSearch"
+        v-model="input"
+        placeholder="请输入内容"
+      ></el-input>
       <el-button type="primary">查询</el-button
-      ><el-button type="primary">添加</el-button>
+      ><el-button type="primary"
+        ><router-link to="/add-good" style="color: #fff"
+          >添加</router-link
+        ></el-button
+      >
     </div>
     <!-- 表格区域 -->
     <div class="swapper">
@@ -58,7 +66,7 @@
 
 <script>
 import MyPagination from "../../components/MyPagination.vue";
-import { getList } from "../../api/index.js";
+import { getList, search } from "../../api/index.js";
 export default {
   components: {
     MyPagination,
@@ -77,14 +85,31 @@ export default {
       this.page = val;
       this.getLists();
     },
+    // 数据获取
     async getLists() {
       try {
         const res = await getList({ page: this.page });
         if (res.status === 200) {
-          console.log(res);
+          // console.log(res);
           this.tableData = res.data.data;
           this.pageSize = res.data.pageSize;
           this.total = res.data.total;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    // 搜索数据
+    async getSearch() {
+      try {
+        const res2 = await search({ search: this.input });
+        if (res2.data.status === 200) {
+          this.tableData = res2.data.data;
+          this.total = res2.data.searchLength;
+        } else if (res2.data.status === 500) {
+          // console.log(1);
+          this.tableData = [];
         }
       } catch (err) {
         console.log(err);

@@ -8,7 +8,7 @@ const Goods = () => import("../views/Goods/index.vue");
 const Params = () => import("../views/Params/index.vue");
 const Advert = () => import("../views/Advert/index.vue");
 const Order = () => import("../views/Order/index.vue");
-
+const AddGood = () => import("../views/Goods/addGood.vue");
 Vue.use(VueRouter);
 
 const routes = [
@@ -25,6 +25,11 @@ const routes = [
         path: "/goods",
         name: "Goods",
         component: Goods,
+      },
+      {
+        path: "/add-good",
+        name: "addGood",
+        component: AddGood,
       },
       {
         path: "/params",
