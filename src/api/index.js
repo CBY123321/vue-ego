@@ -26,3 +26,10 @@ export const goodsDelete = (params) => {
     params,
   });
 };
+export const goodsEdit = (params) => {
+  return request({
+    method: "GET",
+    url: "/api/backend/item/updateTbItem",
+    params,
+  });
+};

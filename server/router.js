@@ -40,7 +40,7 @@ router.get("/projectList", (req, res) => {
 router.get("/search", (req, res) => {
   var search = req.query.search;
   const sql =
-    "select * from data where concat(`title`,`sellPoint`,`descs`) like '%" +
+    "select * from data where concat(`title`,`sellPoint`,`desc`) like '%" +
     search +
     "%'";
   sqlFun(sql, null, (result) => {
@@ -218,5 +218,37 @@ router.get("/backend/item/deleteItemById", (req, res) => {
     }
   });
 });
+/**
+ * 修改商品
+ */
 
+router.get("/backend/item/updateTbItem", (req, res) => {
+  var id = req.query.id;
+  var title = req.query.title || "";
+  var sellPoint = req.query.sellPoint || "";
+  var price = req.query.price || "";
+  var cid = req.query.cid || "";
+  var category = req.query.category || "";
+  var num = req.query.num || "";
+  var desc = req.query.desc || "";
+  var image = req.query.image || "";
+  const sql = "update data set ? where id=?";
+  sqlFun(
+    sql,
+    [{ title, sellPoint, price, cid, category, num, desc, image }, id],
+    (result) => {
+      if (result.affectedRows > 0) {
+        res.send({
+          status: 200,
+          msg: "修改成功",
+        });
+      } else {
+        res.send({
+          status: 500,
+          msg: "修改失败",
+        });
+      }
+    }
+  );
+});
 module.exports = router;

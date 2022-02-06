@@ -41,7 +41,7 @@
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="descs" label="商品描述" show-overflow-tooltip>
+        <el-table-column prop="desc" label="商品描述" show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="操作" width="180"
           ><template slot-scope="scope">
@@ -117,7 +117,9 @@ export default {
         console.log(err);
       }
     },
-    handleEdit() {},
+    handleEdit(row) {
+      this.$router.push({ path: "/add-good", query: { row: row } });
+    },
     async handleDelete(row) {
       await goodsDelete({ id: row.id });
       await this.getLists();

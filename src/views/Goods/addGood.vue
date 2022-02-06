@@ -7,7 +7,7 @@
         <el-breadcrumb-item :to="{ path: '/goods' }"
           >商品管理</el-breadcrumb-item
         >
-        <el-breadcrumb-item>添加商品</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ title }}商品</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="form">
@@ -47,12 +47,12 @@
             :src="goodsForm.image"
             alt=""
         /></el-form-item>
-        <el-form-item label="商品描述" prop="descs">
+        <el-form-item label="商品描述" prop="desc">
           <div id="main"></div>
         </el-form-item>
         <el-form-item
           ><el-button type="primary" @click="submitForm('ruleForm')"
-            >立即创建</el-button
+            >立即{{ title }}</el-button
           >
           <el-button @click="resetForm('ruleForm')"
             >重置</el-button
@@ -106,10 +106,11 @@
 
 <script>
 import E from "wangeditor";
-import { add, goodsAdd } from "../../api/index.js";
+import { add, goodsAdd, goodsEdit } from "../../api/index.js";
 export default {
   data() {
     return {
+      title: "添加",
       editor: "",
       fileList: "",
       props: {
@@ -118,6 +119,7 @@ export default {
       dialogVisible: false,
       dialogImg: false,
       goodsForm: {
+        id: "",
         title: "",
         price: "",
         num: "",
@@ -137,6 +139,22 @@ export default {
       },
     };
   },
+  created() {
+    if (this.$route.query.row) {
+      this.title = "编辑";
+      this.goodsForm = this.$route.query.row;
+      this.$nextTick(() => {
+        this.editor.txt.html(this.$route.query.row.desc);
+      });
+    }
+    console.log(this.$route);
+  },
+  // watch: {
+  //   "this.goodsForm"(val) {
+  //     console.log(val);
+  //     this.goodsForm = val;
+  //   },
+  // },
   mounted() {
     this.editor = new E("#main");
     // 或者 const editor = new E( document.getElementById('div1') )
@@ -151,24 +169,53 @@ export default {
     submitForm(ruleForm) {
       this.$refs[ruleForm].validate(async (valid) => {
         if (valid) {
-          try {
-            console.log(this.goodsForm);
-            let { title, price, num, sellPoint, image, desc, category, cid } =
-              this.goodsForm;
-
-            const res3 = await goodsAdd({
-              title,
-              price,
-              num,
-              sellPoint,
-              image,
-              desc,
-              category,
-              cid,
-            });
-          } catch (err) {
-            console.log(arr);
+          if (this.$route.query.row) {
+            try {
+              let {
+                id,
+                title,
+                price,
+                num,
+                sellPoint,
+                image,
+                desc,
+                category,
+                cid,
+              } = this.goodsForm;
+              await goodsEdit({
+                id,
+                title,
+                price,
+                num,
+                sellPoint,
+                image,
+                desc,
+                category,
+                cid,
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            try {
+              console.log(this.goodsForm);
+              let { title, price, num, sellPoint, image, desc, category, cid } =
+                this.goodsForm;
+              await goodsAdd({
+                title,
+                price,
+                num,
+                sellPoint,
+                image,
+                desc,
+                category,
+                cid,
+              });
+            } catch (err) {
+              console.log(arr);
+            }
           }
+
           this.$router.push("/goods");
         } else {
           console.log("err!!");
