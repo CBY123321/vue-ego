@@ -14,6 +14,7 @@
       <el-form
         :model="goodsForm"
         :rules="rules"
+        ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
       >
@@ -47,7 +48,7 @@
             alt=""
         /></el-form-item>
         <el-form-item label="商品描述" prop="descs">
-          <textarea cols="30" rows="10"></textarea>
+          <div id="main"></div>
         </el-form-item>
         <el-form-item
           ><el-button type="primary" @click="submitForm('ruleForm')"
@@ -104,10 +105,12 @@
 </template>
 
 <script>
-import { add } from "../../api/index.js";
+import E from "wangeditor";
+import { add, goodsAdd } from "../../api/index.js";
 export default {
   data() {
     return {
+      editor: "",
       fileList: "",
       props: {
         label: "name",
@@ -122,18 +125,58 @@ export default {
         image: "",
         desc: "",
         category: "",
+        cid: "",
       },
       rules: {
-        name: [
+        title: [
           { required: true, message: "请输入商品名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 2 到 8 个字符", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
         ],
         price: [{ required: true, message: "请输入价格", trigger: "blur" }],
         num: [{ required: true, message: "请输入数量", trigger: "blur" }],
       },
     };
   },
+  mounted() {
+    this.editor = new E("#main");
+    // 或者 const editor = new E( document.getElementById('div1') )
+    this.editor.config.onchange = (newHtml) => {
+      this.goodsForm.desc = newHtml;
+    };
+    // 配置触发 onchange 的时间频率，默认为 200ms
+    this.editor.config.onchangeTimeout = 500; // 修改为 500ms
+    this.editor.create();
+  },
   methods: {
+    submitForm(ruleForm) {
+      this.$refs[ruleForm].validate(async (valid) => {
+        if (valid) {
+          try {
+            console.log(this.goodsForm);
+            let { title, price, num, sellPoint, image, desc, category, cid } =
+              this.goodsForm;
+
+            const res3 = await goodsAdd({
+              title,
+              price,
+              num,
+              sellPoint,
+              image,
+              desc,
+              category,
+              cid,
+            });
+          } catch (err) {
+            console.log(arr);
+          }
+          this.$router.push("/goods");
+        } else {
+          console.log("err!!");
+          return false;
+        }
+      });
+    },
+
     getPic(response, file, fileList) {
       let imgUrl = "http://localhost:8000/" + response.url.slice(7);
       console.log(imgUrl);
@@ -155,10 +198,15 @@ export default {
       }
       if (node.level >= 1) {
         const res2 = await add({ id: node.data.cid });
+        this.goodsForm.cid = node.data.id;
         // console.log(res2);
         if (res2.data.status == 200) return resolve(res2.data.result);
         else return resolve([]);
       }
+    },
+    resetForm(goodsForm) {
+      this.$refs[goodsForm].resetFields();
+      this.editor.txt.clear();
     },
   },
 };

@@ -153,4 +153,70 @@ router.post("/upload", upload.single("file"), function (req, res, next) {
   });
 });
 
+/**
+ * 商品添加
+ * 参数： title cid  category sellPoint price num descs paramsInfo image
+ */
+router.get("/backend/item/insertTbItem", (req, res) => {
+  /**
+   * 获取参数
+   */
+  var title = req.query.title || "";
+  var cid = req.query.cid || "";
+  var category = req.query.category || "";
+  var sellPoint = req.query.sellPoint || "";
+  var price = req.query.price || "";
+  var num = req.query.num || "";
+  var desc = req.query.desc || "";
+  var paramsInfo = req.query.paramsInfo || "";
+  var image = req.query.image || "";
+
+  const sql = "insert into  data values (null,?,?,?,?,?,?,?,'',1,'','',?,?)";
+  var arr = [
+    title,
+    image,
+    sellPoint,
+    price,
+    cid,
+    category,
+    num,
+    desc,
+    paramsInfo,
+  ];
+  sqlFun(sql, arr, (result) => {
+    if (result.affectedRows > 0) {
+      res.send({
+        status: 200,
+        msg: "添加成功",
+      });
+    } else {
+      res.send({
+        status: 500,
+        msg: "添加失败",
+      });
+    }
+  });
+});
+/**
+ * 商品删除接口 id
+ */
+router.get("/backend/item/deleteItemById", (req, res) => {
+  var id = req.query.id;
+  const sql = "delete from data where id=?";
+  const arr = [id];
+  sqlFun(sql, arr, (result) => {
+    if (result.affectedRows > 0) {
+      res.send({
+        status: 200,
+        msg: "删除成功",
+      });
+    } else {
+      res.send({
+        status: 500,
+        msg: "删除失败",
+      });
+    }
+  });
+});
+
 module.exports = router;

@@ -12,3 +12,17 @@ export const add = (params) => {
     params,
   });
 };
+export const goodsAdd = (params) => {
+  return request({
+    method: "GET",
+    url: "/api/backend/item/insertTbItem",
+    params,
+  });
+};
+export const goodsDelete = (params) => {
+  return request({
+    method: "GET",
+    url: "/api/backend/item/deleteItemById",
+    params,
+  });
+};

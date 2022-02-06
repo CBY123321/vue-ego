@@ -44,14 +44,16 @@
         <el-table-column prop="descs" label="商品描述" show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="操作" width="180"
-          ><el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
+          ><template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+              >删除</el-button
+            ></template
           >
         </el-table-column>
       </el-table>
@@ -66,7 +68,7 @@
 
 <script>
 import MyPagination from "../../components/MyPagination.vue";
-import { getList, search } from "../../api/index.js";
+import { goodsDelete, getList, search } from "../../api/index.js";
 export default {
   components: {
     MyPagination,
@@ -116,7 +118,10 @@ export default {
       }
     },
     handleEdit() {},
-    deleteEdit() {},
+    async handleDelete(row) {
+      await goodsDelete({ id: row.id });
+      await this.getLists();
+    },
   },
   created() {
     this.getLists();
