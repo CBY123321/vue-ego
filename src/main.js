@@ -9,6 +9,11 @@ import "./assets/css/reset.css";
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
+let user = localStorage.getItem("user");
+if (user) {
+  user = JSON.parse(user);
+  store.commit("user/getInfo", user);
+}
 new Vue({
   router,
   store,

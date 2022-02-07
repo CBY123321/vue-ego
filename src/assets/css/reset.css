@@ -1,4 +1,10 @@
 @import url("https://at.alicdn.com/t/font_3167161_yf1qrnptroh.css?spm=a313x.7781069.1998910419.47&file=font_3167161_yf1qrnptroh.css");
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
 * {
   margin: 0;
   padding: 0;
@@ -15,4 +21,5 @@ img {
 body {
   font-family: "微软雅黑", "Arial Narrow", Arial, sans-serif;
   font-size: 14px;
+  background: #f5f5f5;
 }

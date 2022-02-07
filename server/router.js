@@ -4,6 +4,8 @@ const router = express.Router();
 const sqlFun = require("./mysql");
 const multer = require("multer");
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
+const config = require("./secret");
 /**
  * 商品列表：获取分页 {total:'',arr:[{},{},{}],pagesize:8,}
  * 参数：page 页码
@@ -251,4 +253,67 @@ router.get("/backend/item/updateTbItem", (req, res) => {
     }
   );
 });
+//登录接口
+/**
+ * 语法：
+ * 如60，"2 days"，"10h"，"7d"，Expiration time，过期时间
+ *  jwt.sign({},'秘钥','过期时间,{expiresIn:20*1,'1day''1h'}')
+ */
+
+/**
+ * 登录 login
+ * 接受的字段：username,password
+ * 测试：postman
+ */
+router.post("/login", (req, res) => {
+  let { username, password } = req.body;
+  //请求数据库
+  let sql = "select * from user where username=? and password=?";
+  let arr = [username, password];
+  sqlFun(sql, arr, (result) => {
+    if (result.length > 0) {
+      let token = jwt.sign(
+        {
+          username: result[0].username,
+          id: result[0].id,
+        },
+        config.jwtSecert,
+        {
+          expiresIn: "1h",
+        }
+      );
+      res.send({
+        status: 200,
+        data: "Bearer " + token,
+      });
+    } else {
+      res.send({
+        status: 404,
+        msg: "信息错误",
+      });
+    }
+  });
+});
+
+/**
+ * 注册接口 /register
+ */
+router.post("/register", (req, res) => {
+  const { username, password } = req.body;
+  const sql = "insert into userinfo values(null,?,?)";
+  const arr = [username, password];
+  sqlFn(sql, arr, (result) => {
+    if (result.affectedRows > 0) {
+      res.send({
+        msg: "注册成功",
+        status: 200,
+      });
+    } else {
+      res.status(401).json({
+        errors: "用户名密码错误",
+      });
+    }
+  });
+});
+
 module.exports = router;

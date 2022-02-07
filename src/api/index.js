@@ -33,3 +33,10 @@ export const goodsEdit = (params) => {
     params,
   });
 };
+export const login = (data) => {
+  return request({
+    method: "POST",
+    url: "/api/login",
+    data,
+  });
+};
